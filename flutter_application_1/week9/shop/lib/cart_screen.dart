@@ -42,14 +42,13 @@ class CartScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: Consumer<Cart>(
-        builder: (context, cart, child) {
-          final items = cart.items;
-
-          return Column(
-            children: [
-              Expanded(
-                child: ListView.builder(
+      body: Column(
+        children: [
+          Expanded(
+            child: Consumer<Cart>(
+              builder: (context, cart, _) {
+                final items = cart.items;
+                return ListView.builder(
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final book = items[index];
@@ -74,35 +73,42 @@ class CartScreen extends StatelessWidget {
                       ),
                     );
                   },
-                ),
+                );
+              },
+            ),
+          ),
+          Consumer<Cart>(
+            builder: (context, cart, child) => Container(
+              padding: const EdgeInsets.all(16),
+              color: Colors.orange.shade50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  child!,
+                  Text(
+                    '${cart.total} ₸',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
-              child!, // Используем переданный константный виджет
-            ],
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          color: Colors.orange.shade50,
-          child: Consumer<Cart>(
-            builder: (context, cart, _) => Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                const Text(
+                Icon(Icons.receipt_long),
+                SizedBox(width: 8),
+                Text(
                   'Total:',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '${cart.total} ₸',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
                 ),
               ],
             ),
           ),
-        ),
+        ],
       ),
     );
   }
